@@ -18,6 +18,7 @@
 
 package org.audit4j.benchmark;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -27,13 +28,15 @@ import java.util.concurrent.TimeUnit;
 import org.audit4j.core.AuditManager;
 import org.audit4j.core.Configuration;
 import org.audit4j.core.DummyMetaData;
-import org.audit4j.core.SimpleLayout;
 import org.audit4j.core.dto.EventBuilder;
 import org.audit4j.core.handler.Handler;
 import org.audit4j.core.handler.file.FileAuditHandler;
+import org.audit4j.core.layout.SimpleLayout;
+import org.openjdk.jmh.Main;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.Fork;
+import org.openjdk.jmh.annotations.Level;
 import org.openjdk.jmh.annotations.Measurement;
 import org.openjdk.jmh.annotations.Mode;
 import org.openjdk.jmh.annotations.OutputTimeUnit;
@@ -42,16 +45,15 @@ import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.annotations.TearDown;
 import org.openjdk.jmh.annotations.Warmup;
+import org.openjdk.jmh.runner.RunnerException;
 
-@Measurement(iterations = 5, time = 5)
-@Warmup(iterations = 5)
-@Fork(1)
-@BenchmarkMode(Mode.Throughput)
-@OutputTimeUnit(TimeUnit.SECONDS)
+@Measurement(iterations = 5, time = 1)
+@Warmup(iterations = 5, time = 1)
+@Fork(3) 
 @State(Scope.Thread)
 public class GeneralBenchmarks {
 
-    @Setup
+    @Setup(Level.Trial)
     public void setup() {
         Configuration conf = new Configuration();
         List<Handler> handlers = new ArrayList<Handler>();
@@ -62,21 +64,44 @@ public class GeneralBenchmarks {
         Map<String, String> properties = new HashMap<String, String>();
         properties.put("log.file.location", "C:\\tmp");
         conf.setProperties(properties);
-        AuditManager manager = AuditManager.getConfigurationInstance(conf);
-        manager.audit(new EventBuilder().addActor("Init Actor").addAction("Init").addField("Init Param", "Init")
-                .build());
+        AuditManager.getConfigurationInstance(conf);
     }
 
     @Benchmark
+    @BenchmarkMode(Mode.Throughput)
+    @OutputTimeUnit(TimeUnit.SECONDS)
     public void sendEvents() {
         AuditManager.getInstance().audit(
                 new EventBuilder().addActor("Init Actor").addAction("myMethod").addField("myParam1Name", "sfd")
                         .addField("myParam2Name", "sdfdsf").build());
 
     }
-
-    @TearDown
-    public void tearDown() {
+    
+    @Benchmark
+    @BenchmarkMode(Mode.AverageTime)
+    @OutputTimeUnit(TimeUnit.MICROSECONDS)
+    public void sendEventsAvgTime() {
+        AuditManager.getInstance().audit(
+                new EventBuilder().addActor("Init Actor").addAction("myMethod").addField("myParam1Name", "sfd")
+                        .addField("myParam2Name", "sdfdsf").build());
 
     }
+    
+    @TearDown(Level.Trial)
+    public void tearDown() {
+        AuditManager.getInstance().shutdown();
+    }
+    
+    public static void main(String[] args) {
+        try {
+            Main.main(args);
+        } catch (RunnerException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+    
 }
