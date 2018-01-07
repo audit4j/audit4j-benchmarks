@@ -1,4 +1,4 @@
-package org.audit4j.benchmark.Mock;
+package org.audit4j.benchmark.mock;
 
 import org.audit4j.core.annotation.Audit;
 import org.audit4j.core.annotation.AuditField;

@@ -1,0 +1,10 @@
+# To Activate this configuration, remove or comment Spring configuration. 
+# see @org.audt4j.demo.spring.config.AuditConfig for more details.
+
+!Configuration
+handlers: 
+- !org.audit4j.core.handler.ConsoleAuditHandler {}
+- !org.audit4j.handler.db.DatabaseAuditHandler 
+   embedded: true
+layout: !org.audit4j.core.layout.SimpleLayout {}
+

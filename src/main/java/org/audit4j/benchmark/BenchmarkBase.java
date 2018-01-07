@@ -2,8 +2,8 @@ package org.audit4j.benchmark;
 
 import java.lang.reflect.Method;
 
-import org.audit4j.benchmark.Mock.ClassAnnotationMock;
-import org.audit4j.benchmark.Mock.NullAnnotationMock;
+import org.audit4j.benchmark.mock.ClassAnnotationMock;
+import org.audit4j.benchmark.mock.NullAnnotationMock;
 import org.audit4j.core.Configuration;
 import org.audit4j.core.DummyMetaData;
 import org.audit4j.core.dto.AnnotationAuditEvent;
@@ -34,11 +34,7 @@ public class BenchmarkBase {
         Method annoMethod = null;
         try {
             annoMethod = ClassAnnotationMock.class.getMethod("testClassAnnotation_selection_all", String.class);
-        } catch (NoSuchMethodException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (SecurityException e) {
-            // TODO Auto-generated catch block
+        } catch (NoSuchMethodException | SecurityException e) {
             e.printStackTrace();
         }
         Object[] args = new Object[1];
@@ -50,11 +46,7 @@ public class BenchmarkBase {
         Method annoMethod = null;
         try {
             annoMethod = NullAnnotationMock.class.getMethod("testNullAnnotation_Method", String.class);
-        } catch (NoSuchMethodException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (SecurityException e) {
-            // TODO Auto-generated catch block
+        } catch (NoSuchMethodException | SecurityException e) {
             e.printStackTrace();
         }
         Object[] args = new Object[1];

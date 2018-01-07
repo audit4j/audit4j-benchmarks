@@ -18,7 +18,6 @@
 
 package org.audit4j.benchmark;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -28,11 +27,12 @@ import java.util.concurrent.TimeUnit;
 import org.audit4j.core.AuditManager;
 import org.audit4j.core.Configuration;
 import org.audit4j.core.DummyMetaData;
+import org.audit4j.core.dto.AuditEvent;
 import org.audit4j.core.dto.EventBuilder;
+import org.audit4j.core.handler.ConsoleAuditHandler;
 import org.audit4j.core.handler.Handler;
 import org.audit4j.core.handler.file.FileAuditHandler;
 import org.audit4j.core.layout.SimpleLayout;
-import org.openjdk.jmh.Main;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.Fork;
@@ -45,26 +45,25 @@ import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.annotations.TearDown;
 import org.openjdk.jmh.annotations.Warmup;
-import org.openjdk.jmh.runner.RunnerException;
 
 @Measurement(iterations = 5, time = 1)
 @Warmup(iterations = 5, time = 1)
 @Fork(3) 
 @State(Scope.Thread)
-public class GeneralBenchmarks {
+public class Audit4jConsoleBenchmarks {
+	
+	
 
     @Setup(Level.Trial)
     public void setup() {
+    	
         Configuration conf = new Configuration();
         List<Handler> handlers = new ArrayList<Handler>();
-        handlers.add(new FileAuditHandler());
+        handlers.add(new ConsoleAuditHandler());
         conf.setHandlers(handlers);
         conf.setLayout(new SimpleLayout());
         conf.setMetaData(new DummyMetaData());
-        Map<String, String> properties = new HashMap<String, String>();
-        properties.put("log.file.location", "C:\\tmp");
-        conf.setProperties(properties);
-        AuditManager.getConfigurationInstance(conf);
+        AuditManager.startWithConfiguration(conf);
     }
 
     @Benchmark
@@ -89,19 +88,8 @@ public class GeneralBenchmarks {
     
     @TearDown(Level.Trial)
     public void tearDown() {
-        AuditManager.getInstance().shutdown();
+    	AuditManager.shutdown();
     }
     
-    public static void main(String[] args) {
-        try {
-            Main.main(args);
-        } catch (RunnerException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-    }
     
 }
