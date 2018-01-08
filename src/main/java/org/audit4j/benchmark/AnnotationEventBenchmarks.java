@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import org.audit4j.benchmark.Mock.MethodAnnotationMock;
+import org.audit4j.benchmark.mock.MethodAnnotationMock;
 import org.audit4j.core.AuditManager;
 import org.audit4j.core.Configuration;
 import org.audit4j.core.DummyMetaData;
@@ -25,6 +25,7 @@ import org.openjdk.jmh.annotations.OutputTimeUnit;
 import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
+import org.openjdk.jmh.annotations.TearDown;
 import org.openjdk.jmh.annotations.Warmup;
 
 @Measurement(iterations = 5, time = 1)
@@ -33,11 +34,11 @@ import org.openjdk.jmh.annotations.Warmup;
 @State(Scope.Thread)
 public class AnnotationEventBenchmarks extends BenchmarkBase {
 
-    AnnotationAuditEvent event = null;
+    private AnnotationAuditEvent event = null;
 
-    AnnotationAuditEvent m_a_s_all_event = null;
+    private AnnotationAuditEvent m_a_s_all_event = null;
 
-    AnnotationAuditEvent m_a_s_marked_event = null;
+    private AnnotationAuditEvent m_a_s_marked_event = null;
 
     @Setup(Level.Trial)
     public void setup() {
@@ -50,12 +51,18 @@ public class AnnotationEventBenchmarks extends BenchmarkBase {
         Map<String, String> properties = new HashMap<String, String>();
         properties.put("log.file.location", "C:\\tmp");
         conf.setProperties(properties);
-        AuditManager.getConfigurationInstance(conf);
+        AuditManager.startWithConfiguration(conf);
         event = getSampleAnnotationEvent();
         m_a_s_all_event = generateMethodAnnotationSelectionAllEvent();
         m_a_s_marked_event = generateMethodAnnotationSelectionMarkedEvent();
     }
 
+    @TearDown(Level.Trial)
+    public void tearDown() {
+    	AuditManager.shutdown();
+    }
+    
+    
     @Benchmark
     @BenchmarkMode(Mode.Throughput)
     @OutputTimeUnit(TimeUnit.SECONDS)
@@ -89,11 +96,7 @@ public class AnnotationEventBenchmarks extends BenchmarkBase {
         try {
             annoMethod = MethodAnnotationMock.class.getMethod("testAnnotation_selection_all", Integer.class,
                     String.class, MethodAnnotationMock.class, Object.class, String.class);
-        } catch (NoSuchMethodException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (SecurityException e) {
-            // TODO Auto-generated catch block
+        } catch (NoSuchMethodException | SecurityException e) {
             e.printStackTrace();
         }
         System.out.println(annoMethod);
@@ -111,11 +114,7 @@ public class AnnotationEventBenchmarks extends BenchmarkBase {
         try {
             annoMethod = MethodAnnotationMock.class.getMethod("testAnnotation_selection_marked", Integer.class,
                     String.class, MethodAnnotationMock.class, Object.class, String.class);
-        } catch (NoSuchMethodException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (SecurityException e) {
-            // TODO Auto-generated catch block
+        } catch (NoSuchMethodException | SecurityException e) {
             e.printStackTrace();
         }
         System.out.println(annoMethod);

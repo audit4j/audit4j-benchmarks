@@ -1,4 +1,4 @@
-package org.audit4j.benchmark.Mock;
+package org.audit4j.benchmark.mock;
 
 
 public class NullAnnotationMock {
