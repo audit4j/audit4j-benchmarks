@@ -10,6 +10,9 @@ then use
 java -jar target\microbenchmarks.jar
 
 # results
+Microbench with pc on Windows 10
+
+With Processeur	Intel(R) Core(TM) i3-3217U CPU @ 1.80GHz, 1801 MHz, 2 cœur(s), 4 processeur(s) logique(s)
 
 | Benchmark                                                             | Mode  Cnt     Score      Error  Units  |
 | --------------------------------------------------------------------- | -------------------------------------- |
