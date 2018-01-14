@@ -52,18 +52,23 @@ import org.openjdk.jmh.annotations.Warmup;
 @State(Scope.Thread)
 public class Audit4jConsoleBenchmarks {
 	
-	
 
-    @Setup(Level.Trial)
-    public void setup() {
-    	
+	public Configuration getConfiguration() {
         Configuration conf = new Configuration();
         List<Handler> handlers = new ArrayList<Handler>();
         handlers.add(new ConsoleAuditHandler());
         conf.setHandlers(handlers);
         conf.setLayout(new SimpleLayout());
         conf.setMetaData(new DummyMetaData());
-        AuditManager.startWithConfiguration(conf);
+        
+		return conf;
+	}
+
+    @Setup(Level.Trial)
+    public void setup() {
+    	
+
+        AuditManager.startWithConfiguration(getConfiguration());
     }
 
     @Benchmark

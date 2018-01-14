@@ -1,11 +1,6 @@
 package org.audit4j.benchmark;
 
-import static org.junit.Assert.*;
-
-import org.audit4j.core.AuditManager;
-import org.junit.After;
 import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -22,15 +17,10 @@ public class Audit4jConsoleBenchmarksTest {
 
 	@AfterClass
 	public static void tearDownAfterClass() throws Exception {
+		bench.tearDown();
 	}
 
-	@Before
-	public void setUp() throws Exception {
-	}
 
-	@After
-	public void tearDown() throws Exception {
-	}
 
 	@Test
 	public void testSendEvents() {

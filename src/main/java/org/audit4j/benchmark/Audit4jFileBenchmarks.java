@@ -49,9 +49,8 @@ import org.openjdk.jmh.annotations.Warmup;
 @Fork(3) 
 @State(Scope.Thread)
 public class Audit4jFileBenchmarks {
-
-    @Setup(Level.Trial)
-    public void setup() {
+	
+	public Configuration getConfiguration() {
         Configuration conf = new Configuration();
         List<Handler> handlers = new ArrayList<Handler>();
         handlers.add(new FileAuditHandler());
@@ -61,7 +60,13 @@ public class Audit4jFileBenchmarks {
         Map<String, String> properties = new HashMap<String, String>();
         properties.put("log.file.location", "C:\\tmp");
         conf.setProperties(properties);
-        AuditManager.startWithConfiguration(conf);
+        
+		return conf;
+	}
+
+    @Setup(Level.Trial)
+    public void setup() {
+        AuditManager.startWithConfiguration(getConfiguration());
     }
 
     @Benchmark
